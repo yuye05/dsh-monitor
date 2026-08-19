@@ -1,0 +1,11 @@
+{
+  "name": "deepseek-monitor",
+  "version": "1.0.0",
+  "description": "DeepSeek Monitor 桌面悬浮窗：官方用量监控（余额 / Tokens / 费用 / 缓存命中）",
+  "private": true,
+  "license": "MIT",
+  "author": "王Jimmy",
+  "dependencies": {
+    "@playwright/test": "^1.61.1"
+  }
+}

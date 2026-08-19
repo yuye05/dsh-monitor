@@ -1,0 +1,176 @@
+/* DeepSeek Monitor — 浅色卡片 Dashboard（复刻参考图） */
+:root {
+  --bg: #F0F5F9;
+  --card: #FFFFFF;
+  --border: #E4EDF5;
+  --text: #1F2A37;
+  --muted: #8A94A6;
+  --blue: #2563EB;
+  --blue-soft: #EFF4FF;
+  --orange: #E8762D;
+  --purple: #7C5CFF;
+  --green: #10B981;
+  --danger: #DC2626;
+  --danger-soft: #FEF2F2;
+  --radius-lg: 18px;
+  --radius-sm: 12px;
+  --shadow: 0 10px 30px rgba(31, 42, 55, 0.08);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  font-family: "Segoe UI", system-ui, -apple-system, "Microsoft YaHei", "PingFang SC", sans-serif;
+  font-variant-numeric: tabular-nums;
+  background: var(--bg);
+  color: var(--text);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.app {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* 标题栏 */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.brand { display: flex; align-items: center; gap: 8px; }
+.logo {
+  width: 26px; height: 26px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #3B82F6, #2563EB);
+  color: #fff; font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+}
+.brand-title { font-size: 14px; font-weight: 600; }
+.header-actions { display: flex; gap: 4px; }
+.icon-btn {
+  width: 26px; height: 26px;
+  border: none; background: transparent;
+  border-radius: 7px; color: var(--muted);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+}
+.icon-btn:hover { background: #E7EEF6; color: var(--text); }
+
+/* 卡片通用 */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  box-shadow: 0 1px 2px rgba(31, 42, 55, 0.04);
+}
+
+/* 余额卡 */
+.balance-label { font-size: 12px; color: var(--muted); }
+.balance-head { display: flex; align-items: center; justify-content: space-between; }
+.status-chip {
+  font-size: 11px; color: #047857;
+  background: #ECFDF5; border-radius: 999px;
+  padding: 2px 8px; display: flex; align-items: center; gap: 5px;
+}
+.status-chip .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
+.balance-value {
+  font-size: 32px; font-weight: 700; color: var(--blue);
+  margin: 6px 0 12px;
+}
+.balance-value .cny { font-size: 18px; font-weight: 600; }
+.balance-cols {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+  border-top: 1px solid var(--border); padding-top: 12px;
+}
+.col { display: flex; flex-direction: column; gap: 3px; }
+.col-label { font-size: 11px; color: var(--muted); }
+.col-value { font-size: 16px; font-weight: 600; }
+.orange { color: var(--orange); }
+
+/* 模型卡 */
+.model-card .model-head { display: flex; align-items: center; gap: 8px; }
+.model-icon {
+  width: 24px; height: 24px; border-radius: 7px;
+  display: flex; align-items: center; justify-content: center; font-size: 13px;
+}
+.model-icon.flash { background: var(--blue-soft); color: var(--blue); }
+.model-icon.pro { background: #F3EFFF; color: var(--purple); }
+.model-name { font-size: 13px; font-weight: 600; }
+.today-tag {
+  font-size: 10px; color: var(--muted);
+  background: #F1F5F9; border-radius: 999px;
+  padding: 1px 6px; margin-left: 2px;
+}
+.model-usage.zero { font-size: 16px; color: var(--muted); font-weight: 500; margin: 10px 0 4px; }
+.model-hit {
+  margin-left: auto; font-size: 11px; font-weight: 600;
+  padding: 2px 8px; border-radius: 999px;
+}
+.model-hit.flash { color: #047857; background: #ECFDF5; }
+.model-hit.pro { color: #6D28D9; background: #F3EFFF; }
+.model-usage { font-size: 20px; font-weight: 700; margin: 6px 0 2px; }
+.model-sub { display: flex; gap: 14px; font-size: 11px; color: var(--muted); }
+.model-sub b { color: var(--text); font-weight: 600; }
+
+/* 图表卡 */
+.chart-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.chart-title { font-size: 13px; font-weight: 600; }
+.chart-summary { font-size: 11px; color: var(--muted); }
+.chart-bars {
+  display: flex; align-items: flex-end; gap: 8px; height: 110px;
+  padding-top: 16px; position: relative;
+}
+.bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; }
+.bar-value { font-size: 9px; color: var(--muted); }
+.bar-stack { width: 100%; max-width: 26px; flex: 1; display: flex; flex-direction: column-reverse; justify-content: flex-start; gap: 1px; }
+.bar-seg { width: 100%; border-radius: 2px; }
+.bar-seg.hit { background: var(--green); }
+.bar-seg.miss { background: var(--orange); }
+.bar-seg.out { background: var(--purple); }
+.bar-date { font-size: 10px; color: var(--muted); }
+.chart-legend { display: flex; gap: 14px; margin-top: 10px; }
+.legend-item { font-size: 11px; color: var(--muted); display: flex; align-items: center; gap: 5px; }
+.legend-dot { width: 8px; height: 8px; border-radius: 2px; }
+.legend-dot.green { background: var(--green); }
+.legend-dot.orange { background: var(--orange); }
+.legend-dot.purple { background: var(--purple); }
+
+/* 页脚 */
+.app-footer { text-align: center; font-size: 10px; color: var(--muted); padding-bottom: 2px; }
+
+/* 空/错误态 */
+.empty { color: var(--muted); font-size: 12px; padding: 8px 0; }
+
+/* 告警状态（A1） */
+.balance-value.danger { color: var(--danger); }
+.status-chip.warn { color: #B91C1C; background: #FEE2E2; }
+.status-chip.warn .dot { background: var(--danger); }
+.col-value.danger { color: var(--danger); }
+.warn-note { font-size: 11px; color: var(--danger); font-weight: 600; margin-top: 2px; }
+
+/* Toast 通知条（A1）：role=alert 播报、4s 自动消失、transform+opacity 动效 */
+.toast {
+  position: fixed;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-8px);
+  background: var(--text);
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.5;
+  padding: 8px 14px;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(31, 42, 55, 0.28);
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  max-width: 290px;
+  text-align: center;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }

@@ -1,0 +1,5 @@
+# DeepSeek Monitor 悬浮窗 —— Python 依赖
+# 安装：pip install -r requirements.txt
+# （Windows 本机实测：proxy_tools 构建需短 TMP，否则 WinError 206 路径过长）
+#   TMP=C:/Temp TEMP=C:/Temp pip install -r requirements.txt
+pywebview>=6.0

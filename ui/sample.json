@@ -1,0 +1,89 @@
+{
+  "generated_at": "2026-08-17T00:00:00+00:00",
+  "total_messages": 100,
+  "models": {
+    "deepseek-v4-flash": {
+      "label": "V4 Flash",
+      "input_tokens": 1234567,
+      "cache_read_tokens": 98765432,
+      "cache_creation_tokens": 0,
+      "output_tokens": 345678,
+      "total_tokens": 100355677,
+      "cache_hit_rate": 0.9876,
+      "cost_cny": 12.34,
+      "efficiency_mtok_per_yuan": 8.13,
+      "lifetime": {
+        "label": "V4 Flash",
+        "input_tokens": 32345678,
+        "cache_read_tokens": 987654321,
+        "cache_creation_tokens": 0,
+        "output_tokens": 7654321,
+        "total_tokens": 1027434320,
+        "cache_hit_rate": 0.9683,
+        "cost_cny": 88.88,
+        "efficiency_mtok_per_yuan": 11.56
+      }
+    },
+    "deepseek-v4-pro": {
+      "label": "V4 Pro",
+      "input_tokens": 0,
+      "cache_read_tokens": 0,
+      "cache_creation_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0,
+      "cache_hit_rate": 0.0,
+      "cost_cny": 0.0,
+      "efficiency_mtok_per_yuan": 0.0,
+      "lifetime": {
+        "label": "V4 Pro",
+        "input_tokens": 8654321,
+        "cache_read_tokens": 123456789,
+        "cache_creation_tokens": 0,
+        "output_tokens": 1234567,
+        "total_tokens": 133345677,
+        "cache_hit_rate": 0.9345,
+        "cost_cny": 45.67,
+        "efficiency_mtok_per_yuan": 2.92
+      }
+    }
+  },
+  "other_models": {
+    "other-model": {
+      "label": "other-model",
+      "input_tokens": 100000,
+      "cache_read_tokens": 500000,
+      "cache_creation_tokens": 0,
+      "output_tokens": 10000,
+      "total_tokens": 610000,
+      "cache_hit_rate": 0.8333,
+      "cost_cny": 0.0,
+      "efficiency_mtok_per_yuan": 0.0
+    }
+  },
+  "daily": [
+    { "date": "08-11", "hit_tokens": 15000000, "miss_tokens": 1500000, "output_tokens": 130000 },
+    { "date": "08-12", "hit_tokens": 5000000, "miss_tokens": 500000, "output_tokens": 50000 },
+    { "date": "08-13", "hit_tokens": 20000000, "miss_tokens": 2000000, "output_tokens": 200000 },
+    { "date": "08-14", "hit_tokens": 12000000, "miss_tokens": 1200000, "output_tokens": 120000 },
+    { "date": "08-15", "hit_tokens": 30000000, "miss_tokens": 3000000, "output_tokens": 300000 },
+    { "date": "08-16", "hit_tokens": 8000000, "miss_tokens": 800000, "output_tokens": 80000 },
+    { "date": "08-17", "hit_tokens": 25000000, "miss_tokens": 2500000, "output_tokens": 250000 }
+  ],
+  "summary": {
+    "today_cost": 12.34,
+    "today_date": "08-17",
+    "month_cost": 100.00,
+    "month": "2026-08"
+  },
+  "official": {
+    "ok": false,
+    "error": "示例数据（真实运行时由 fetch_official.js 填充）"
+  },
+  "balance": {
+    "is_available": true,
+    "currency": "CNY",
+    "total_balance": "88.88",
+    "granted_balance": null,
+    "topped_up_balance": null
+  }
+}

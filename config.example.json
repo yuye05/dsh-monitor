@@ -1,0 +1,7 @@
+{
+  "node_path": "C:\\Users\\<你的用户名>\\AppData\\Roaming\\npm\\node_modules",
+  "credentials_file": "C:\\Users\\<你的用户名>\\.dsh\\.credentials.yaml",
+  "claude_projects": "C:\\Users\\<你的用户名>\\.claude\\projects",
+  "balance_alert_threshold": 20,
+  "today_cost_alert_threshold": 50
+}
