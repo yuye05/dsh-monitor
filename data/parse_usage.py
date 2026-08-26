@@ -38,9 +38,13 @@ except ImportError:
 CLAUDE_PROJECTS = _C["claude_projects"]
 BEIJING_TZ = timezone(timedelta(hours=8))
 
-# 主展示的两个模型
-PRIMARY_MODELS = ["deepseek-v4-flash", "deepseek-v4-pro"]
-LABELS = {"deepseek-v4-flash": "V4 Flash", "deepseek-v4-pro": "V4 Pro"}
+# 主展示的模型（flash 保留历史数据；vision 为新主力）
+PRIMARY_MODELS = ["deepseek-v4-flash-vision-exp", "deepseek-v4-flash", "deepseek-v4-pro"]
+LABELS = {
+    "deepseek-v4-flash-vision-exp": "V4 Flash Vision",
+    "deepseek-v4-flash": "V4 Flash",
+    "deepseek-v4-pro": "V4 Pro",
+}
 
 
 def parse_ts(ts_str):

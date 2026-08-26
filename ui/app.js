@@ -53,8 +53,9 @@
 
   // ---------- 渲染 ----------
   function renderModel(m, model, offModel) {
-    const cls = model === "deepseek-v4-flash" ? "flash" : "pro";
-    const icon = model === "deepseek-v4-flash" ? "⚡" : "\u{1F9E0}"; // ⚡ / 🧠
+    const isFlash = model === "deepseek-v4-flash" || model === "deepseek-v4-flash-vision-exp";
+    const cls = isFlash ? "flash" : "pro";
+    const icon = model === "deepseek-v4-flash" ? "⚡" : model === "deepseek-v4-flash-vision-exp" ? "👁️" : "\u{1F9E0}"; // ⚡ / 👁️ / 🧠
     if (!m) return "";
     // 主数字：官方 per-model Tokens 优先；本地兜底
     const tokens =
@@ -206,12 +207,16 @@
     // 模型卡片：官方 per-model Tokens 为主，命中率来自本地
     const offModels = (off && off.models) || {};
     const models = Object.keys(data.models || {}).filter(
-      (m) => m === "deepseek-v4-flash" || m === "deepseek-v4-pro"
+      (m) => m === "deepseek-v4-flash" || m === "deepseek-v4-flash-vision-exp" || m === "deepseek-v4-pro"
     );
+    const offKeyMap = {
+      "deepseek-v4-flash": "flash",
+      "deepseek-v4-flash-vision-exp": "flash-vision",
+      "deepseek-v4-pro": "pro",
+    };
     $("model-cards").innerHTML = models
       .map((m) => {
-        const offKey = m === "deepseek-v4-flash" ? "flash" : "pro";
-        return renderModel(data.models[m], m, offModels[offKey]);
+        return renderModel(data.models[m], m, offModels[offKeyMap[m] || "pro"]);
       })
       .join("");
     // 图表

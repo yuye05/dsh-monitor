@@ -86,14 +86,19 @@ const LOGIN_WAIT_MS = 5 * 60 * 1000;
     // 从模型视图解析 per-model Tokens/请求数
     function extractModels(t) {
       const out = {};
-      for (const [name, key] of [['deepseek-v4-flash', 'flash'], ['deepseek-v4-pro', 'pro']]) {
+      // 注意：vision 模型名包含 "deepseek-v4-flash" 子串，必须先匹配 vision，否则 flash 会误命中 vision 段
+      for (const [name, key, label] of [
+        ['deepseek-v4-flash-vision-exp', 'flash-vision', 'V4 Flash Vision'],
+        ['deepseek-v4-flash', 'flash', 'V4 Flash'],
+        ['deepseek-v4-pro', 'pro', 'V4 Pro'],
+      ]) {
         const idx = t.indexOf(name);
         if (idx < 0) continue;
         const sec = t.slice(idx, idx + 300);
         const rM = sec.match(/API\s*请求次数\s*([\d,]+)/);
         const oM = sec.match(/Tokens\s*([\d,]+)/);
         out[key] = {
-          label: key === 'flash' ? 'V4 Flash' : 'V4 Pro',
+          label,
           tokens: oM ? parseInt(oM[1].replace(/,/g, '')) : null,
           requests: rM ? parseInt(rM[1].replace(/,/g, '')) : null,
         };

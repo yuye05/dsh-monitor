@@ -19,14 +19,20 @@ from datetime import datetime, timezone
 PRICE_CHANGE_UTC = datetime(2026, 8, 16, 16, 0, 0, tzinfo=timezone.utc)
 
 # 旧统一价（元/百万 token），2026-08-17 北京时间前生效
+# deepseek-v4-flash-vision-exp 与 flash 同价（官方 2026-08-21 新闻：图片折算 token 后按 V4-Flash 计费）
 OLD_PRICES_CNY = {
     "deepseek-v4-flash": {"hit": 0.02, "miss": 1.0, "output": 2.0},
+    "deepseek-v4-flash-vision-exp": {"hit": 0.02, "miss": 1.0, "output": 2.0},
     "deepseek-v4-pro": {"hit": 0.025, "miss": 3.0, "output": 6.0},
 }
 
 # 新峰谷价（元/百万 token）
 NEW_PRICES_CNY = {
     "deepseek-v4-flash": {
+        "off_peak": {"hit": 0.05, "miss": 1.5, "output": 4.5},
+        "peak": {"hit": 0.10, "miss": 3.0, "output": 9.0},
+    },
+    "deepseek-v4-flash-vision-exp": {
         "off_peak": {"hit": 0.05, "miss": 1.5, "output": 4.5},
         "peak": {"hit": 0.10, "miss": 3.0, "output": 9.0},
     },
