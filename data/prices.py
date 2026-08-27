@@ -19,19 +19,13 @@ from datetime import datetime, timezone
 PRICE_CHANGE_UTC = datetime(2026, 8, 16, 16, 0, 0, tzinfo=timezone.utc)
 
 # 旧统一价（元/百万 token），2026-08-17 北京时间前生效
-# deepseek-v4-flash-vision-exp 与 flash 同价（官方 2026-08-21 新闻：图片折算 token 后按 V4-Flash 计费）
 OLD_PRICES_CNY = {
-    "deepseek-v4-flash": {"hit": 0.02, "miss": 1.0, "output": 2.0},
     "deepseek-v4-flash-vision-exp": {"hit": 0.02, "miss": 1.0, "output": 2.0},
     "deepseek-v4-pro": {"hit": 0.025, "miss": 3.0, "output": 6.0},
 }
 
 # 新峰谷价（元/百万 token）
 NEW_PRICES_CNY = {
-    "deepseek-v4-flash": {
-        "off_peak": {"hit": 0.05, "miss": 1.5, "output": 4.5},
-        "peak": {"hit": 0.10, "miss": 3.0, "output": 9.0},
-    },
     "deepseek-v4-flash-vision-exp": {
         "off_peak": {"hit": 0.05, "miss": 1.5, "output": 4.5},
         "peak": {"hit": 0.10, "miss": 3.0, "output": 9.0},
@@ -40,6 +34,12 @@ NEW_PRICES_CNY = {
         "off_peak": {"hit": 0.15, "miss": 4.5, "output": 13.5},
         "peak": {"hit": 0.30, "miss": 9.0, "output": 27.0},
     },
+}
+
+# 固定价（元/百万 token），无峰谷、无新旧之分 —— 目前仅 GLM-5.3-flash
+# 来源（2026-08-27 核实）：智谱官方中国区定价，输入 0.8 / 输出 2.8 / 缓存命中 0.23
+FLAT_PRICES_CNY = {
+    "glm-5.3-flash": {"hit": 0.23, "miss": 0.8, "output": 2.8},
 }
 
 # 高峰时段（北京时间）：09:00-12:00 与 14:00-18:00
@@ -59,12 +59,16 @@ def _is_peak_beijing(dt_utc: datetime) -> bool:
 def price_for(model: str, ts_utc: datetime):
     """
     返回某条消息适用的单价三元组 (hit, miss, output)，单位元/百万 token。
-    model: deepseek-v4-flash / deepseek-v4-pro
+    model: 三模型（deepseek-v4-flash-vision-exp / deepseek-v4-pro / glm-5.3-flash）
     ts_utc: 带时区的 UTC datetime
     """
     model = model.lower()
+    # 固定价模型（如 GLM）不分峰谷、不分新旧，直接返回
+    flat = FLAT_PRICES_CNY.get(model)
+    if flat:
+        return (flat["hit"], flat["miss"], flat["output"])
     if model not in OLD_PRICES_CNY and model not in NEW_PRICES_CNY:
-        # 未知模型（如 qwen3.7-plus 或 synthetic）无价目，返回 None 表示不折算费用
+        # 未知模型无价目，返回 None 表示不折算费用
         return None
 
     if ts_utc < PRICE_CHANGE_UTC:

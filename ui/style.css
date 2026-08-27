@@ -100,6 +100,7 @@ html, body {
 }
 .model-icon.flash { background: var(--blue-soft); color: var(--blue); }
 .model-icon.pro { background: #F3EFFF; color: var(--purple); }
+.model-icon.glm { background: #FFF4E5; color: #EA8A00; }
 .model-name { font-size: 13px; font-weight: 600; }
 .today-tag {
   font-size: 10px; color: var(--muted);
@@ -113,6 +114,7 @@ html, body {
 }
 .model-hit.flash { color: #047857; background: #ECFDF5; }
 .model-hit.pro { color: #6D28D9; background: #F3EFFF; }
+.model-hit.glm { color: #B45309; background: #FEF3C7; }
 .model-usage { font-size: 20px; font-weight: 700; margin: 6px 0 2px; }
 .model-sub { display: flex; gap: 14px; font-size: 11px; color: var(--muted); }
 .model-sub b { color: var(--text); font-weight: 600; }

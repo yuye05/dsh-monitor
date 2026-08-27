@@ -7,7 +7,7 @@
  *
  * 用法：node fetch_official.js
  * 输出 JSON：
- *   {"ok":true,"balance":"55.47","today_cost":"20.89","total_tokens":"180123456","requests":"1030","time_range":"今天"}
+ *   {"ok":true,"balance":"55.47","today_cost":"20.89","total_tokens":"180123456","requests":"1030","time_range":"今天","models":{...}}
  *   {"ok":false,"need_login":true}
  */
 const { chromium } = require('@playwright/test');
@@ -84,12 +84,11 @@ const LOGIN_WAIT_MS = 5 * 60 * 1000;
     const rangeM = text.match(/近\s*\d+\s*天|今天/);
 
     // 从模型视图解析 per-model Tokens/请求数
+    // 注意：vision 模型名包含 "deepseek-v4-flash" 子串，必须先匹配 vision，否则 flash 会误命中 vision 段
     function extractModels(t) {
       const out = {};
-      // 注意：vision 模型名包含 "deepseek-v4-flash" 子串，必须先匹配 vision，否则 flash 会误命中 vision 段
       for (const [name, key, label] of [
         ['deepseek-v4-flash-vision-exp', 'flash-vision', 'V4 Flash Vision'],
-        ['deepseek-v4-flash', 'flash', 'V4 Flash'],
         ['deepseek-v4-pro', 'pro', 'V4 Pro'],
       ]) {
         const idx = t.indexOf(name);

@@ -53,11 +53,12 @@
 
   // ---------- 渲染 ----------
   function renderModel(m, model, offModel) {
-    const isFlash = model === "deepseek-v4-flash" || model === "deepseek-v4-flash-vision-exp";
-    const cls = isFlash ? "flash" : "pro";
-    const icon = model === "deepseek-v4-flash" ? "⚡" : model === "deepseek-v4-flash-vision-exp" ? "👁️" : "\u{1F9E0}"; // ⚡ / 👁️ / 🧠
+    const isFlash = model === "deepseek-v4-flash-vision-exp";
+    const cls = isFlash ? "flash" : model === "glm-5.3-flash" ? "glm" : "pro";
+    const icon = model === "deepseek-v4-flash-vision-exp" ? "👁️" : model === "glm-5.3-flash" ? "🔥" : "\u{1F9E0}"; // 👁️ / 🔥 / 🧠
+    const hasOff = !!(offModel && (offModel.tokens != null || offModel.requests != null));
     if (!m) return "";
-    // 主数字：官方 per-model Tokens 优先；本地兜底
+    // 主数字：DeepSeek 走官网 per-model 优先；GLM 无官网数据走本地
     const tokens =
       offModel && offModel.tokens != null
         ? offModel.tokens
@@ -90,7 +91,7 @@
         <div class="model-usage">${fmtInt(tokens)} <span style="font-size:11px;color:var(--muted);font-weight:400">Tokens</span></div>
         <div class="model-sub">
           ${requests != null ? `<span>请求 <b>${fmtInt(requests)}</b></span>` : ""}
-          <span>来源 <b>官网</b></span>
+          <span>来源 <b>${hasOff ? "官网" : "本地"}</b></span>
         </div>
       </section>`;
   }
@@ -207,16 +208,18 @@
     // 模型卡片：官方 per-model Tokens 为主，命中率来自本地
     const offModels = (off && off.models) || {};
     const models = Object.keys(data.models || {}).filter(
-      (m) => m === "deepseek-v4-flash" || m === "deepseek-v4-flash-vision-exp" || m === "deepseek-v4-pro"
+      (m) => m === "deepseek-v4-flash-vision-exp" || m === "deepseek-v4-pro" || m === "glm-5.3-flash"
     );
+    // 官方 per-model 只在 DeepSeek 官网有，GLM 无官网数据 → 不映射（renderModel 会按 hasOff 显示"本地"）
     const offKeyMap = {
-      "deepseek-v4-flash": "flash",
       "deepseek-v4-flash-vision-exp": "flash-vision",
       "deepseek-v4-pro": "pro",
     };
     $("model-cards").innerHTML = models
       .map((m) => {
-        return renderModel(data.models[m], m, offModels[offKeyMap[m] || "pro"]);
+        // offKeyMap[m] 存在才取官网数据，否则传 null（避免 fallback 到 "pro" 错配）
+        const key = offKeyMap[m];
+        return renderModel(data.models[m], m, key ? offModels[key] : null);
       })
       .join("");
     // 图表

@@ -8,7 +8,7 @@ DeepSeek Monitor — 用量聚合脚本
 {
   "generated_at": iso,
   "models": {
-    "deepseek-v4-flash": {label, input_tokens, cache_read_tokens, cache_creation_tokens,
+    "deepseek-v4-flash-vision-exp": {label, input_tokens, cache_read_tokens, cache_creation_tokens,
                           output_tokens, total_tokens, cache_hit_rate, cost_cny,
                           efficiency_mtok_per_yuan},
     "deepseek-v4-pro": {...},
@@ -38,12 +38,12 @@ except ImportError:
 CLAUDE_PROJECTS = _C["claude_projects"]
 BEIJING_TZ = timezone(timedelta(hours=8))
 
-# 主展示的模型（flash 保留历史数据；vision 为新主力）
-PRIMARY_MODELS = ["deepseek-v4-flash-vision-exp", "deepseek-v4-flash", "deepseek-v4-pro"]
+# 主展示的三模型（vision/pro/glm；v4-flash 非视觉版已弃用）
+PRIMARY_MODELS = ["deepseek-v4-flash-vision-exp", "deepseek-v4-pro", "glm-5.3-flash"]
 LABELS = {
     "deepseek-v4-flash-vision-exp": "V4 Flash Vision",
-    "deepseek-v4-flash": "V4 Flash",
     "deepseek-v4-pro": "V4 Pro",
+    "glm-5.3-flash": "GLM-5.3 Flash",
 }
 
 
@@ -148,7 +148,7 @@ def aggregate():
                 if d.startswith(month_prefix):
                     month_cost += c
 
-    # 组装输出：主卡片只留 flash/pro（匹配参考图两张卡片），其余模型单列 other_models
+    # 组装输出：主卡片只留三模型（vision/pro/glm），其余模型单列 other_models
     def _fmt(model, m):
         total = m["input_tokens"] + m["cache_read_tokens"] + m["cache_creation_tokens"] + m["output_tokens"]
         denom = m["input_tokens"] + m["cache_read_tokens"] + m["cache_creation_tokens"]

@@ -2,8 +2,8 @@
   "generated_at": "2026-08-17T00:00:00+00:00",
   "total_messages": 100,
   "models": {
-    "deepseek-v4-flash": {
-      "label": "V4 Flash",
+    "deepseek-v4-flash-vision-exp": {
+      "label": "V4 Flash Vision",
       "input_tokens": 1234567,
       "cache_read_tokens": 98765432,
       "cache_creation_tokens": 0,
@@ -13,7 +13,7 @@
       "cost_cny": 12.34,
       "efficiency_mtok_per_yuan": 8.13,
       "lifetime": {
-        "label": "V4 Flash",
+        "label": "V4 Flash Vision",
         "input_tokens": 32345678,
         "cache_read_tokens": 987654321,
         "cache_creation_tokens": 0,
@@ -44,6 +44,28 @@
         "cache_hit_rate": 0.9345,
         "cost_cny": 45.67,
         "efficiency_mtok_per_yuan": 2.92
+      }
+    },
+    "glm-5.3-flash": {
+      "label": "GLM-5.3 Flash",
+      "input_tokens": 0,
+      "cache_read_tokens": 0,
+      "cache_creation_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0,
+      "cache_hit_rate": 0.0,
+      "cost_cny": 0.0,
+      "efficiency_mtok_per_yuan": 0.0,
+      "lifetime": {
+        "label": "GLM-5.3 Flash",
+        "input_tokens": 0,
+        "cache_read_tokens": 0,
+        "cache_creation_tokens": 0,
+        "output_tokens": 0,
+        "total_tokens": 0,
+        "cache_hit_rate": 0.0,
+        "cost_cny": 0.0,
+        "efficiency_mtok_per_yuan": 0.0
       }
     }
   },
