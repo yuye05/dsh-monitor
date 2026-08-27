@@ -16,3 +16,6 @@ node_modules/
 # 运行产物
 *.log
 _spawn_test.txt
+
+# 智谱 GLM 登录会话（同 .edge-profile，绝不入库）
+.glm-profile/

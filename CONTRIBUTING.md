@@ -17,9 +17,10 @@ pip install -r requirements.txt   # Python 依赖（pywebview）
 npm install                        # Node 依赖（官网抓取器 @playwright/test）
 cp config.example.json config.json # 填入你的三条路径
 node fetch_official.js --login     # 首次登录 DeepSeek 开放平台（会话存 .edge-profile/）
+node fetch_glm.js --login          # 可选：显示 GLM 前登录智谱（会话存 .glm-profile/）
 ```
 
-> ⚠️ 本项目强依赖 Windows + Claude Code 会话日志 + DeepSeek 官方登录会话，详见 README 的定位说明。
+> ⚠️ 本项目强依赖 Windows + Claude Code 会话日志 + DeepSeek 官方登录会话（可选智谱），详见 README 的定位说明。
 
 项目**无自动化测试套件**。提交前请跑冒烟检查：
 

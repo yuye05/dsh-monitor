@@ -2,6 +2,24 @@
 
 格式遵循 [Keep a Changelog](https://keepachangelog.com/)，版本遵循 [Semantic Versioning](https://semver.org/)。
 
+## [Unreleased]
+
+### Added
+
+- **智谱 GLM-5.3-Flash 支持**：新增 `fetch_glm.js` 抓智谱官网 `open.bigmodel.cn/finance-center/finance/overview`，显示 GLM 余额 + 本月消费（GLM 卡片下方独立橙色条）
+- **三模型卡片**：V4 Pro / V4 Flash Vision / GLM-5.3-Flash 并列（V4 Pro 走官网 per-model，V4 Flash Vision 走官网 + 本地命中率，GLM 走本地 jsonl）
+- GLM 费用折算：智谱中国区固定价（输入 0.8 / 输出 2.8 / 缓存 0.23 元，无峰谷）
+
+### Changed
+
+- 从"V4 Flash / V4 Pro 两模型"升级为三模型池，移除已弃用的 `deepseek-v4-flash` 非视觉版与 `qwen3.7-plus`
+- 模型卡片"来源"标签区分 DeepSeek(官网) 与 GLM(本地)——因智谱官网无 per-model token 明细
+- README / CONTRIBUTING 更新：新增智谱登录说明、三模型功能、GLM 数据源说明
+
+### Security
+
+- `.gitignore` 新增 `.glm-profile/`（智谱登录会话，同 `.edge-profile` 绝不入库）
+
 ## [1.0.0] - 2026-08-19
 
 ### Added

@@ -101,7 +101,7 @@ html, body {
 .model-icon.flash { background: var(--blue-soft); color: var(--blue); }
 .model-icon.pro { background: #F3EFFF; color: var(--purple); }
 .model-icon.glm { background: #FFF4E5; color: #EA8A00; }
-.model-name { font-size: 13px; font-weight: 600; }
+.model-name { font-size: 12px; font-weight: 600; white-space: nowrap; }
 .today-tag {
   font-size: 10px; color: var(--muted);
   background: #F1F5F9; border-radius: 999px;
@@ -118,6 +118,15 @@ html, body {
 .model-usage { font-size: 20px; font-weight: 700; margin: 6px 0 2px; }
 .model-sub { display: flex; gap: 14px; font-size: 11px; color: var(--muted); }
 .model-sub b { color: var(--text); font-weight: 600; }
+
+/* GLM 智谱余额条（贴合 model-card 语言，GLM 橙色调） */
+.glm-balance-card { margin-top: 2px; padding: 10px 12px; }
+.glm-balance-row { display: flex; align-items: center; gap: 7px; }
+.glm-balance-label { font-size: 12px; color: var(--muted); white-space: nowrap; }
+.glm-balance-val { font-size: 15px; font-weight: 700; color: #EA8A00; white-space: nowrap; }
+.glm-balance-val .cny { font-size: 12px; font-weight: 600; }
+.glm-balance-sub { margin-left: auto; font-size: 10px; color: var(--muted); white-space: nowrap; }
+.glm-balance-sub b { color: var(--text); font-weight: 600; }
 
 /* 图表卡 */
 .chart-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }

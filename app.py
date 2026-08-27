@@ -48,6 +48,30 @@ def fetch_official_data():
         return {"ok": False, "error": f"{e.__class__.__name__}: {e}"}
 
 
+def fetch_glm_data():
+    """运行智谱 GLM 财务抓取器（node fetch_glm.js），返回智谱余额/月消费 dict。
+
+    智谱官网无 per-model token 明细（只有余额+月消费），GLM token 用量走本地 jsonl。
+    失败返回 {"ok": False}。
+    """
+    import subprocess
+    import json as _json
+    try:
+        env = dict(os.environ)
+        env.setdefault("NODE_PATH", CONFIG["node_path"])
+        r = subprocess.run(
+            ["node", os.path.join(ROOT, "fetch_glm.js")],
+            capture_output=True, text=True, timeout=60, cwd=ROOT, env=env,
+            creationflags=subprocess.CREATE_NO_WINDOW,
+        )
+        out = r.stdout.strip()
+        if not out:
+            return {"ok": False, "error": "抓取器无输出"}
+        return _json.loads(out)
+    except Exception as e:  # noqa: BLE001
+        return {"ok": False, "error": f"{e.__class__.__name__}: {e}"}
+
+
 def get_merged_data():
     """合并：本地用量聚合 + 官网官方数据（余额/今日消费/Tokens）。官方抓不到时余额回退 API。"""
     merged = {}
@@ -58,6 +82,9 @@ def get_merged_data():
 
     official = fetch_official_data()
     merged["official"] = official
+
+    # 智谱 GLM 财务数据（余额/月消费；独立于 DeepSeek）
+    merged["glm"] = fetch_glm_data()
 
     if official.get("ok"):
         # 官方数据可用：balance 也用官方余额

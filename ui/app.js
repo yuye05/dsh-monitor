@@ -96,6 +96,27 @@
       </section>`;
   }
 
+  // GLM 智谱余额条（GLM 卡片下方，风格贴合 .model-sub；智谱官网只能抓余额+月消费）
+  function renderGlmBalance(data) {
+    const g = data.glm || {};
+    const hasGlmCard = (data.models || {})["glm-5.3-flash"];
+    if (!hasGlmCard) return "";
+    const bal = g.ok && g.balance != null ? Number(g.balance) : null;
+    const monthCost = g.ok && g.month_cost != null ? Number(g.month_cost) : null;
+    if (bal === null && monthCost === null) return "";
+    const balStr = (bal !== null) ? fmtMoney(bal) : "--";
+    const costStr = (monthCost !== null) ? fmtMoney(monthCost) : "--";
+    return `
+      <section class="card glm-balance-card">
+        <div class="glm-balance-row">
+          <span class="model-icon glm">🔥</span>
+          <span class="glm-balance-label">智谱余额</span>
+          <span class="glm-balance-val">${balStr}</span>
+          <span class="glm-balance-sub">本月消费 ${costStr}</span>
+        </div>
+      </section>`;
+  }
+
   function renderChart() {
     const daily = DATA.daily || [];
     const bars = $("chart-bars");
@@ -221,7 +242,7 @@
         const key = offKeyMap[m];
         return renderModel(data.models[m], m, key ? offModels[key] : null);
       })
-      .join("");
+      .join("") + renderGlmBalance(data);
     // 图表
     renderChart();
     // 页脚
