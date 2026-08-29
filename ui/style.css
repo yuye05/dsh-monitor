@@ -1,187 +1,242 @@
-/* DeepSeek Monitor — 浅色卡片 Dashboard（复刻参考图） */
+/* ============================================================
+   DeepSeek Monitor — 方向 A「能源仪表舱」
+   深色默认 · 暖金(消耗/仪表) · 冷青(缓存省) · 紫(输出) · 等宽数字
+   浅色主题：<html data-theme="light">（原浅色卡片保留为可选）
+   ============================================================ */
+
+/* ---------- 主题 Token ---------- */
 :root {
+  --bg: #0A0E16;
+  --bg-glow-1: rgba(46, 159, 196, 0.09);
+  --bg-glow-2: rgba(200, 131, 44, 0.07);
+  --card: #141A26;
+  --card-hover: #1C2433;
+  --border: #232C3C;
+  --text: #E7ECF3;
+  --muted: #8B96A8;
+  --amber: #C8832C;            /* 消耗 / 仪表指示（dataviz 验证过，L0.48-0.67） */
+  --amber-soft: rgba(200, 131, 44, 0.16);
+  --cyan: #2E9FC4;             /* 缓存命中 / "省"（dataviz 验证过） */
+  --cyan-soft: rgba(46, 159, 196, 0.16);
+  --violet: #8B7CF6;           /* 输出 */
+  --violet-soft: rgba(139, 124, 246, 0.16);
+  --danger: #F87171;           /* 告警(状态色, 保留) */
+  --danger-soft: rgba(248, 113, 113, 0.15);
+  --radius-lg: 16px;
+  --radius-sm: 12px;
+  --radius-xs: 8px;
+  --shadow: 0 14px 40px rgba(0, 0, 0, 0.45);
+  --shadow-soft: 0 2px 12px rgba(0, 0, 0, 0.32);
+  --mono: "JetBrains Mono", "Cascadia Mono", Consolas, "Segoe UI Mono", ui-monospace, monospace;
+  --sans: "Microsoft YaHei UI", "Microsoft YaHei", "Segoe UI", system-ui, "PingFang SC", sans-serif;
+}
+
+/* 浅色主题（可选）—— 保留原有浅色卡片观感 */
+[data-theme="light"] {
   --bg: #F0F5F9;
+  --bg-glow-1: rgba(242, 247, 252, 0.9);
+  --bg-glow-2: rgba(255, 244, 224, 0.7);
   --card: #FFFFFF;
+  --card-hover: #F4F8FC;
   --border: #E4EDF5;
   --text: #1F2A37;
   --muted: #8A94A6;
-  --blue: #2563EB;
-  --blue-soft: #EFF4FF;
-  --orange: #E8762D;
-  --purple: #7C5CFF;
-  --green: #10B981;
+  --amber: #E8762D;
+  --amber-soft: #FFF1E4;
+  --cyan: #0E9BB5;
+  --cyan-soft: #E6F7FA;
+  --violet: #7C5CFF;
+  --violet-soft: #F1EDFF;
   --danger: #DC2626;
   --danger-soft: #FEF2F2;
-  --radius-lg: 18px;
-  --radius-sm: 12px;
   --shadow: 0 10px 30px rgba(31, 42, 55, 0.08);
+  --shadow-soft: 0 1px 2px rgba(31, 42, 55, 0.04);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 html, body {
-  font-family: "Segoe UI", system-ui, -apple-system, "Microsoft YaHei", "PingFang SC", sans-serif;
+  font-family: var(--sans);
   font-variant-numeric: tabular-nums;
-  background: var(--bg);
   color: var(--text);
+  background:
+    radial-gradient(1100px 600px at 110% -10%, var(--bg-glow-1), transparent 60%),
+    radial-gradient(900px 520px at -20% 115%, var(--bg-glow-2), transparent 62%),
+    var(--bg);
+  background-attachment: fixed;
   user-select: none;
   -webkit-user-select: none;
+  overflow-x: hidden;   /* 去掉底部横向滚动条，保留竖向 */
 }
 
-.app {
-  padding: 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
+.app { padding: 14px; display: flex; flex-direction: column; gap: 12px; }
 
-/* 标题栏 */
-.app-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.brand { display: flex; align-items: center; gap: 8px; }
+/* ---------- 标题栏（拖拽区保持 app.py 的 DRAG_REGION_DIRECT_TARGET_ONLY 逻辑不变） ---------- */
+.app-header { display: flex; align-items: center; justify-content: space-between; }
+.brand { display: flex; align-items: center; gap: 9px; flex: 0 1 auto; min-width: 0; }
 .logo {
-  width: 26px; height: 26px;
-  border-radius: 8px;
-  background: linear-gradient(135deg, #3B82F6, #2563EB);
-  color: #fff; font-size: 14px;
+  width: 26px; height: 26px; border-radius: 8px;
+  background: linear-gradient(135deg, var(--amber), #ff7a3d);
+  color: #1a1206; font-size: 13px;
   display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 12px rgba(240, 168, 50, 0.45);
 }
-.brand-title { font-size: 14px; font-weight: 600; }
-.header-actions { display: flex; gap: 4px; }
+.brand-title { font-size: 14px; font-weight: 600; letter-spacing: 0.02em; line-height: 1.1; }
+.header-actions { display: flex; gap: 3px; flex: 0 0 auto; }
 .icon-btn {
-  width: 26px; height: 26px;
+  width: 28px; height: 28px; flex: 0 0 auto;
   border: none; background: transparent;
-  border-radius: 7px; color: var(--muted);
+  border-radius: 9px; color: var(--muted);
   display: flex; align-items: center; justify-content: center;
   cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
 }
-.icon-btn:hover { background: #E7EEF6; color: var(--text); }
+.icon-btn:hover { background: var(--card-hover); color: var(--text); }
+.icon-btn:focus-visible { outline: 2px solid var(--cyan); outline-offset: 1px; }
+.icon-btn.spinning svg { animation: spin 0.9s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
 
-/* 卡片通用 */
+/* ---------- 卡片通用 ---------- */
 .card {
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   padding: 14px;
-  box-shadow: 0 1px 2px rgba(31, 42, 55, 0.04);
+  box-shadow: var(--shadow-soft);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* 余额卡 */
+/* ---------- 余额卡（弧环 + 居中陀螺读数） ---------- */
 .balance-label { font-size: 12px; color: var(--muted); }
-.balance-head { display: flex; align-items: center; justify-content: space-between; }
+.balance-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
 .status-chip {
-  font-size: 11px; color: #047857;
-  background: #ECFDF5; border-radius: 999px;
+  font-size: 11px; color: var(--cyan);
+  background: var(--cyan-soft); border-radius: 999px;
   padding: 2px 8px; display: flex; align-items: center; gap: 5px;
 }
-.status-chip .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
-.balance-value {
-  font-size: 32px; font-weight: 700; color: var(--blue);
-  margin: 6px 0 12px;
-}
-.balance-value .cny { font-size: 18px; font-weight: 600; }
-.balance-cols {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
-  border-top: 1px solid var(--border); padding-top: 12px;
-}
-.col { display: flex; flex-direction: column; gap: 3px; }
-.col-label { font-size: 11px; color: var(--muted); }
-.col-value { font-size: 16px; font-weight: 600; }
-.orange { color: var(--orange); }
+.status-chip .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 6px var(--cyan); }
 
-/* 模型卡 */
+.gauge-wrap { position: relative; margin: 4px auto 6px; width: 148px; height: 148px; }
+.gauge { width: 100%; height: 100%; }
+.gauge-circle { fill: none; stroke-width: 9; }
+.gauge-track { stroke: rgba(139, 150, 168, 0.16); }
+.gauge-fill {
+  stroke: var(--amber);           /* 弧环 = 今日消耗（暖金仪表） */
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 6px rgba(200, 131, 44, 0.55));
+  transition: stroke-dasharray 0.6s ease, stroke 0.3s ease;
+}
+.gauge-fill.danger { stroke: var(--danger); filter: drop-shadow(0 0 6px var(--danger)); }
+.gauge-center {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 4px;
+}
+.balance-value {
+  font-size: 30px; font-weight: 700; color: var(--text);
+  line-height: 1;
+  display: flex; align-items: baseline;
+}
+.balance-value .cny { font-size: 17px; font-weight: 600; color: var(--amber); margin-right: 2px; }
+.gauge-caption { display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 10.5px; color: var(--muted); margin-top: 3px; }
+.gc-row { display: flex; align-items: baseline; gap: 5px; white-space: nowrap; line-height: 1; }
+.gc-label { font-size: 10.5px; }
+.gauge-caption b { font-weight: 600; }
+.orange { color: var(--amber); }
+.blue { color: var(--cyan); }
+
+.warn-note { font-size: 11px; color: var(--danger); font-weight: 600; text-align: center; margin-top: 0; }
+
+/* 告警态 */
+.balance-value.danger, .col-value.danger, .gauge-caption b.danger { color: var(--danger); }
+.status-chip.warn { color: var(--danger); background: var(--danger-soft); }
+.status-chip.warn .dot { background: var(--danger); box-shadow: 0 0 6px var(--danger); }
+
+/* ---------- 模型卡 ---------- */
 .model-card .model-head { display: flex; align-items: center; gap: 8px; }
 .model-icon {
-  width: 24px; height: 24px; border-radius: 7px;
+  width: 24px; height: 24px; border-radius: 8px;
   display: flex; align-items: center; justify-content: center; font-size: 13px;
+  color: var(--text);
 }
-.model-icon.flash { background: var(--blue-soft); color: var(--blue); }
-.model-icon.pro { background: #F3EFFF; color: var(--purple); }
-.model-icon.glm { background: #FFF4E5; color: #EA8A00; }
-.model-name { font-size: 12px; font-weight: 600; white-space: nowrap; }
+.model-icon.flash { background: var(--cyan-soft); color: var(--cyan); }
+.model-icon.pro { background: var(--violet-soft); color: var(--violet); }
+.model-icon.glm { background: var(--amber-soft); color: var(--amber); }
+.model-name { font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; min-width: 0; }
 .today-tag {
   font-size: 10px; color: var(--muted);
-  background: #F1F5F9; border-radius: 999px;
+  background: var(--card-hover); border-radius: 999px;
   padding: 1px 6px; margin-left: 2px;
+  white-space: nowrap; flex: 0 0 auto;
 }
 .model-usage.zero { font-size: 16px; color: var(--muted); font-weight: 500; margin: 10px 0 4px; }
 .model-hit {
   margin-left: auto; font-size: 11px; font-weight: 600;
   padding: 2px 8px; border-radius: 999px;
+  white-space: nowrap; flex: 0 0 auto;
 }
-.model-hit.flash { color: #047857; background: #ECFDF5; }
-.model-hit.pro { color: #6D28D9; background: #F3EFFF; }
-.model-hit.glm { color: #B45309; background: #FEF3C7; }
+.model-hit.flash { color: var(--cyan); background: var(--cyan-soft); }
+.model-hit.pro { color: var(--violet); background: var(--violet-soft); }
+.model-hit.glm { color: var(--amber); background: var(--amber-soft); }
 .model-usage { font-size: 20px; font-weight: 700; margin: 6px 0 2px; }
 .model-sub { display: flex; gap: 14px; font-size: 11px; color: var(--muted); }
 .model-sub b { color: var(--text); font-weight: 600; }
 
-/* GLM 智谱余额条（贴合 model-card 语言，GLM 橙色调） */
+/* ---------- GLM 智谱余额条 ---------- */
 .glm-balance-card { margin-top: 2px; padding: 10px 12px; }
 .glm-balance-row { display: flex; align-items: center; gap: 7px; }
 .glm-balance-label { font-size: 12px; color: var(--muted); white-space: nowrap; }
-.glm-balance-val { font-size: 15px; font-weight: 700; color: #EA8A00; white-space: nowrap; }
+.glm-balance-val { font-size: 15px; font-weight: 700; color: var(--amber); white-space: nowrap; }
 .glm-balance-val .cny { font-size: 12px; font-weight: 600; }
 .glm-balance-sub { margin-left: auto; font-size: 10px; color: var(--muted); white-space: nowrap; }
 .glm-balance-sub b { color: var(--text); font-weight: 600; }
 
-/* 图表卡 */
+/* ---------- 图表卡（7 天缓存命中，dataviz 规范：细marks+2px段距+圆角顶+图例+直接标注） ---------- */
 .chart-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
 .chart-title { font-size: 13px; font-weight: 600; }
 .chart-summary { font-size: 11px; color: var(--muted); }
 .chart-bars {
-  display: flex; align-items: flex-end; gap: 8px; height: 110px;
+  display: flex; align-items: flex-end; gap: 8px; height: 112px;
   padding-top: 16px; position: relative;
 }
 .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; }
 .bar-value { font-size: 9px; color: var(--muted); }
-.bar-stack { width: 100%; max-width: 26px; flex: 1; display: flex; flex-direction: column-reverse; justify-content: flex-start; gap: 1px; }
-.bar-seg { width: 100%; border-radius: 2px; }
-.bar-seg.hit { background: var(--green); }
-.bar-seg.miss { background: var(--orange); }
-.bar-seg.out { background: var(--purple); }
+.bar-stack { width: 100%; max-width: 26px; flex: 1; display: flex; flex-direction: column-reverse; gap: 2px; justify-content: flex-start; }
+.bar-seg { width: 100%; border-radius: 4px 4px 0 0; }
+.bar-seg:last-child { border-radius: 0 0 4px 4px; }
+.bar-seg.hit { background: var(--cyan); box-shadow: 0 0 6px var(--cyan-soft); }
+.bar-seg.miss { background: var(--amber); }
+.bar-seg.out { background: var(--violet); }
 .bar-date { font-size: 10px; color: var(--muted); }
 .chart-legend { display: flex; gap: 14px; margin-top: 10px; }
 .legend-item { font-size: 11px; color: var(--muted); display: flex; align-items: center; gap: 5px; }
-.legend-dot { width: 8px; height: 8px; border-radius: 2px; }
-.legend-dot.green { background: var(--green); }
-.legend-dot.orange { background: var(--orange); }
-.legend-dot.purple { background: var(--purple); }
+.legend-dot { width: 8px; height: 8px; border-radius: 3px; }
+.legend-dot.green { background: var(--cyan); box-shadow: 0 0 6px var(--cyan-soft); }
+.legend-dot.orange { background: var(--amber); }
+.legend-dot.purple { background: var(--violet); }
 
-/* 页脚 */
+/* ---------- 页脚 ---------- */
 .app-footer { text-align: center; font-size: 10px; color: var(--muted); padding-bottom: 2px; }
 
-/* 空/错误态 */
 .empty { color: var(--muted); font-size: 12px; padding: 8px 0; }
 
-/* 告警状态（A1） */
-.balance-value.danger { color: var(--danger); }
-.status-chip.warn { color: #B91C1C; background: #FEE2E2; }
-.status-chip.warn .dot { background: var(--danger); }
-.col-value.danger { color: var(--danger); }
-.warn-note { font-size: 11px; color: var(--danger); font-weight: 600; margin-top: 2px; }
-
-/* Toast 通知条（A1）：role=alert 播报、4s 自动消失、transform+opacity 动效 */
+/* ---------- Toast ---------- */
 .toast {
-  position: fixed;
-  top: 12px;
-  left: 50%;
+  position: fixed; top: 12px; left: 50%;
   transform: translateX(-50%) translateY(-8px);
-  background: var(--text);
-  color: #fff;
-  font-size: 12px;
-  line-height: 1.5;
-  padding: 8px 14px;
+  background: var(--card-hover); color: var(--text);
+  border: 1px solid var(--border);
+  font-size: 12px; line-height: 1.5; padding: 8px 14px;
   border-radius: 10px;
-  box-shadow: 0 8px 24px rgba(31, 42, 55, 0.28);
-  z-index: 1000;
-  opacity: 0;
-  pointer-events: none;
-  max-width: 290px;
-  text-align: center;
+  box-shadow: var(--shadow);
+  z-index: 1000; opacity: 0; pointer-events: none;
+  max-width: 290px; text-align: center;
   transition: opacity 0.25s ease, transform 0.25s ease;
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ---------- 无障碍 / 动效克制 ---------- */
+:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}

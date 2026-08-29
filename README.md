@@ -28,7 +28,8 @@ DeepSeek V4 系列在 **2026-08-17 起大幅涨价**并改为峰谷定价——�
 - ⚡ **三模型卡片**：V4 Pro / V4 Flash Vision / GLM-5.3 Flash（DeepSeek 走官网，GLM 走本地 jsonl）
 - 📊 最近 7 天缓存命中明细柱状图
 - 🔄 手动刷新（每次约 8s，headless Edge 抓官网）
-- 🎨 浅色卡片 Dashboard（蓝色主色 + 橙色/紫色/绿色辅助）
+- 🎨 **深色「能源仪表舱」主题**（可切浅色）：深墨底 + 暖金弧环余额表 + 冷青缓存命中 + 等宽数字；标题栏主题按钮深浅切换并记忆（localStorage）
+- 📀 **余额弧环**：余额外的 260° 弧环 = 今日消耗占预算比例（阈值来自 config 的 `today_cost_alert_threshold`），越阈值转红
 
 ## 环境要求
 
@@ -117,7 +118,7 @@ python app.py         # 直接启动（debug 用）
 │   ├── prices.py        # DeepSeek 峰谷价目 + GLM 固定价 + 分段计价
 │   ├── fetch_balance.py # DeepSeek /user/balance（API key 只读不落盘）
 │   └── parse_usage.py   # jsonl 聚合 → 模型卡片 + 7 天图表
-└── ui/                  # HTML/CSS/JS（浅色卡片 Dashboard）
+└── ui/                  # HTML/CSS/JS（深色能源仪表舱，可切浅色）
 ```
 
 ## 安全

@@ -33,24 +33,26 @@
     </div>
   </header>
 
-  <!-- 账户概览 -->
+  <!-- 账户概览（弧环 = 今日消耗占预算，签名元素） -->
   <section class="card balance-card">
     <div class="balance-head">
       <span class="balance-label">账户余额</span>
       <span class="status-chip" id="balance-chip"><span class="dot"></span>可用</span>
     </div>
-    <div class="balance-value" id="balance-value">--</div>
-    <div class="balance-cols">
-      <div class="col">
-        <span class="col-label">当日消耗</span>
-        <span class="col-value orange" id="today-cost">--</span>
-        <span class="warn-note" id="cost-warn" hidden>⚠ 超预算</span>
-      </div>
-      <div class="col">
-        <span class="col-label">今日 Tokens</span>
-        <span class="col-value blue" id="today-tokens">--</span>
+    <div class="gauge-wrap">
+      <svg class="gauge" viewBox="0 0 120 120">
+        <circle class="gauge-circle gauge-track" cx="60" cy="60" r="52" pathLength="360" transform="rotate(120 60 60)"/>
+        <circle class="gauge-circle gauge-fill" id="gauge-fill" cx="60" cy="60" r="52" pathLength="360" transform="rotate(120 60 60)"/>
+      </svg>
+      <div class="gauge-center">
+        <div class="balance-value" id="balance-value">--</div>
+        <div class="gauge-caption">
+          <div class="gc-row"><span class="gc-label">消耗</span><b class="orange" id="today-cost">--</b></div>
+          <div class="gc-row"><span class="gc-label">Tokens</span><b class="blue" id="today-tokens">--</b></div>
+        </div>
       </div>
     </div>
+    <div class="warn-note" id="cost-warn" hidden>⚠ 超预算</div>
   </section>
 
   <!-- 模型卡片（动态插入） -->

@@ -70,7 +70,6 @@
         <div class="model-head">
           <span class="model-icon ${cls}">${icon}</span>
           <span class="model-name">${m.label}</span>
-          <span class="today-tag">今日</span>
         </div>
         <div class="model-usage zero">今日未使用</div>
       </section>`;
@@ -85,11 +84,11 @@
         <div class="model-head">
           <span class="model-icon ${cls}">${icon}</span>
           <span class="model-name">${m.label}</span>
-          <span class="today-tag">今日</span>
           ${hitBadge}
         </div>
         <div class="model-usage">${fmtInt(tokens)} <span style="font-size:11px;color:var(--muted);font-weight:400">Tokens</span></div>
         <div class="model-sub">
+          <span>今日</span>
           ${requests != null ? `<span>请求 <b>${fmtInt(requests)}</b></span>` : ""}
           <span>来源 <b>${hasOff ? "官网" : "本地"}</b></span>
         </div>
@@ -129,8 +128,9 @@
         const h = total > 0 ? Math.max((total / max) * 100, 2) : 0;
         const seg = (v, cls) =>
           v > 0 ? `<div class="bar-seg ${cls}" style="height:${Math.max((v / total) * 100, 1.5)}%"></div>` : "";
+        const tip = `${d.date} 命中 ${fmtCompact(d.hit_tokens)} · 未命中 ${fmtCompact(d.miss_tokens)} · 输出 ${fmtCompact(d.output_tokens)}`;
         return `
-          <div class="bar-col">
+          <div class="bar-col" title="${tip}">
             <span class="bar-value">${fmtCompact(total)}</span>
             <div class="bar-stack" style="height:${h}%">
               ${seg(d.output_tokens, "out")}
@@ -166,6 +166,19 @@
       t.hidden = true;
       t.classList.remove("show");
     }, 4000);
+  }
+
+  // 弧环：今日消耗占预算（阈值来自 alerts.today_cost_threshold；无阈值则空环——诚实不编数）
+  function updateGauge(cost, thresh) {
+    const fill = $("gauge-fill");
+    if (!fill) return;
+    let frac = 0;
+    if (thresh && cost != null && cost > 0) {
+      frac = Math.min(cost / (thresh * 1.2), 1);
+    }
+    // 300° 弧（60° 缺口），pathLength=360 → 300*frac 长度
+    fill.style.strokeDasharray = `${(300 * frac).toFixed(2)} 360`;
+    fill.classList.toggle("danger", !!(thresh && cost != null && cost > thresh));
   }
 
   function render(data) {
@@ -223,6 +236,7 @@
       $("today-cost").classList.remove("danger");
       $("cost-warn").hidden = true;
     }
+    updateGauge(costNum, costThresh);
     // 今日 Tokens：官方
     $("today-tokens").textContent =
       offOk && off.total_tokens != null ? fmtCn(Number(off.total_tokens)) : "--";
@@ -282,6 +296,18 @@
     if (window.pywebview && window.pywebview.api && window.pywebview.api.close) {
       window.pywebview.api.close();
     }
+  });
+
+  // 主题：默认深色，按钮切换，localStorage 记忆（方向 A 深色 HUD 定位）
+  function applyTheme(t) {
+    document.documentElement.dataset.theme = t;
+    try { localStorage.setItem("dsmonitor-theme", t); } catch (e) {}
+  }
+  let savedTheme = "dark";
+  try { savedTheme = localStorage.getItem("dsmonitor-theme") || "dark"; } catch (e) {}
+  applyTheme(savedTheme);
+  $("btn-theme").addEventListener("click", () => {
+    applyTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark");
   });
 
   // 初始加载

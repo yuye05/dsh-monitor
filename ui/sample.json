@@ -1,27 +1,27 @@
 {
-  "generated_at": "2026-08-17T00:00:00+00:00",
-  "total_messages": 100,
+  "generated_at": "2026-08-17T13:34:45.832285+00:00",
+  "total_messages": 13927,
   "models": {
     "deepseek-v4-flash-vision-exp": {
       "label": "V4 Flash Vision",
-      "input_tokens": 1234567,
-      "cache_read_tokens": 98765432,
+      "input_tokens": 7104990,
+      "cache_read_tokens": 538766848,
       "cache_creation_tokens": 0,
-      "output_tokens": 345678,
-      "total_tokens": 100355677,
-      "cache_hit_rate": 0.9876,
-      "cost_cny": 12.34,
-      "efficiency_mtok_per_yuan": 8.13,
+      "output_tokens": 2212713,
+      "total_tokens": 548084551,
+      "cache_hit_rate": 0.987,
+      "cost_cny": 50.99,
+      "efficiency_mtok_per_yuan": 10.75,
       "lifetime": {
         "label": "V4 Flash Vision",
-        "input_tokens": 32345678,
-        "cache_read_tokens": 987654321,
+        "input_tokens": 32493719,
+        "cache_read_tokens": 2757146880,
         "cache_creation_tokens": 0,
-        "output_tokens": 7654321,
-        "total_tokens": 1027434320,
-        "cache_hit_rate": 0.9683,
-        "cost_cny": 88.88,
-        "efficiency_mtok_per_yuan": 11.56
+        "output_tokens": 9872001,
+        "total_tokens": 2799512600,
+        "cache_hit_rate": 0.9884,
+        "cost_cny": 136.07,
+        "efficiency_mtok_per_yuan": 20.57
       }
     },
     "deepseek-v4-pro": {
@@ -36,14 +36,14 @@
       "efficiency_mtok_per_yuan": 0.0,
       "lifetime": {
         "label": "V4 Pro",
-        "input_tokens": 8654321,
-        "cache_read_tokens": 123456789,
+        "input_tokens": 8637866,
+        "cache_read_tokens": 368107776,
         "cache_creation_tokens": 0,
-        "output_tokens": 1234567,
-        "total_tokens": 133345677,
-        "cache_hit_rate": 0.9345,
-        "cost_cny": 45.67,
-        "efficiency_mtok_per_yuan": 2.92
+        "output_tokens": 1738447,
+        "total_tokens": 378484089,
+        "cache_hit_rate": 0.9771,
+        "cost_cny": 45.55,
+        "efficiency_mtok_per_yuan": 8.31
       }
     },
     "glm-5.3-flash": {
@@ -69,43 +69,75 @@
       }
     }
   },
-  "other_models": {
-    "other-model": {
-      "label": "other-model",
-      "input_tokens": 100000,
-      "cache_read_tokens": 500000,
-      "cache_creation_tokens": 0,
-      "output_tokens": 10000,
-      "total_tokens": 610000,
-      "cache_hit_rate": 0.8333,
-      "cost_cny": 0.0,
-      "efficiency_mtok_per_yuan": 0.0
-    }
-  },
+  "other_models": {},
   "daily": [
-    { "date": "08-11", "hit_tokens": 15000000, "miss_tokens": 1500000, "output_tokens": 130000 },
-    { "date": "08-12", "hit_tokens": 5000000, "miss_tokens": 500000, "output_tokens": 50000 },
-    { "date": "08-13", "hit_tokens": 20000000, "miss_tokens": 2000000, "output_tokens": 200000 },
-    { "date": "08-14", "hit_tokens": 12000000, "miss_tokens": 1200000, "output_tokens": 120000 },
-    { "date": "08-15", "hit_tokens": 30000000, "miss_tokens": 3000000, "output_tokens": 300000 },
-    { "date": "08-16", "hit_tokens": 8000000, "miss_tokens": 800000, "output_tokens": 80000 },
-    { "date": "08-17", "hit_tokens": 25000000, "miss_tokens": 2500000, "output_tokens": 250000 }
+    {
+      "date": "08-11",
+      "hit_tokens": 16006283,
+      "miss_tokens": 1541765,
+      "output_tokens": 132297
+    },
+    {
+      "date": "08-12",
+      "hit_tokens": 563934,
+      "miss_tokens": 121326,
+      "output_tokens": 2795
+    },
+    {
+      "date": "08-13",
+      "hit_tokens": 2323072,
+      "miss_tokens": 220593,
+      "output_tokens": 71318
+    },
+    {
+      "date": "08-14",
+      "hit_tokens": 28024832,
+      "miss_tokens": 1050223,
+      "output_tokens": 225834
+    },
+    {
+      "date": "08-15",
+      "hit_tokens": 50724992,
+      "miss_tokens": 1166762,
+      "output_tokens": 513394
+    },
+    {
+      "date": "08-16",
+      "hit_tokens": 16296448,
+      "miss_tokens": 183642,
+      "output_tokens": 274576
+    },
+    {
+      "date": "08-17",
+      "hit_tokens": 538766848,
+      "miss_tokens": 7104990,
+      "output_tokens": 2212713
+    }
   ],
   "summary": {
-    "today_cost": 12.34,
+    "today_cost": 50.99,
     "today_date": "08-17",
-    "month_cost": 100.00,
+    "month_cost": 149.42,
     "month": "2026-08"
   },
   "official": {
-    "ok": false,
-    "error": "示例数据（真实运行时由 fetch_official.js 填充）"
+    "ok": true,
+    "logged_in": true,
+    "time_range": "浠婂ぉ",
+    "balance": "54.32",
+    "today_cost": "22.48",
+    "total_tokens": "220381646",
+    "requests": "1108"
   },
   "balance": {
     "is_available": true,
     "currency": "CNY",
-    "total_balance": "88.88",
+    "total_balance": "54.32",
     "granted_balance": null,
     "topped_up_balance": null
+  },
+  "alerts": {
+    "balance_threshold": 20,
+    "today_cost_threshold": 25
   }
 }
