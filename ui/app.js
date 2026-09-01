@@ -342,8 +342,8 @@
     setRollUp(true);
   });
 
-  // 收起后悬停/点击窄条触发展开（resize 后指针再次进入窗口即 mouseenter）
-  $("app").addEventListener("mouseenter", () => {
+  // 收起后点击窄条触发展开（去掉悬停自动展开——需用户主动点击小窗）
+  $("app").addEventListener("click", () => {
     if (_rolledUp) {
       _blurLock = Date.now() + 400;
       setRollUp(false);
