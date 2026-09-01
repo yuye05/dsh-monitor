@@ -24,6 +24,11 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 UI_DIR = os.path.join(ROOT, "ui")
 PORT = 18773
 
+# 窗口尺寸（app.js 只传收起/展开状态，不重复像素值；尺寸唯一来源在这里）
+WIN_W = 342       # 完整窗口宽度
+WIN_H = 690       # 完整窗口高度
+COLLAPSED_H = 40  # 点击外部收起成顶部窄条后的高度（按视觉微调，需 ≥ 标题栏高度）
+
 
 def fetch_official_data():
     """运行官网抓取器（node fetch_official.js），返回官方今日数据 dict。
@@ -142,6 +147,14 @@ class Api:
         for w in webview.windows:
             w.minimize()
 
+    def set_rolled_up(self, collapsed):
+        """收起/展开浮窗：resize 到窄条/完整高度。
+
+        resize 默认 fix_point=NORTH|WEST，缩小高度时保持左上角不动 → 卷成顶部窄条。
+        collapsed 由 JS 端 window.blur / #app mouseenter 触发传入。
+        """
+        webview.windows[0].resize(WIN_W, COLLAPSED_H if collapsed else WIN_H)
+
 
 def screen_size():
     try:
@@ -183,13 +196,14 @@ def main():
     threading.Thread(target=server.serve_forever, daemon=True).start()
 
     # 窗口尺寸与右上角定位
-    W, H = 342, 690
+    W, H = WIN_W, WIN_H
     sw, sh = screen_size()
     x = sw - W - 24
     y = 60
 
-    # 只允许标题栏拖动（否则 easy_drag 下点按钮也被当成拖窗，窗口乱跳、按钮失灵）
-    webview.settings["DRAG_REGION_DIRECT_TARGET_ONLY"] = True
+    # 拖拽：拖拽区覆盖品牌+顶部空白（.drag-zone），按钮在兄弟节点不受拖拽劫持。
+    # DIRECT_TARGET_ONLY=False + easy_drag=False → 仅靠 body 级祖先匹配拖拽区，整窗不误拖。
+    webview.settings["DRAG_REGION_DIRECT_TARGET_ONLY"] = False
     webview.create_window(
         "DeepSeek Monitor",
         f"http://127.0.0.1:{PORT}/",
@@ -198,7 +212,7 @@ def main():
         x=x,
         y=y,
         frameless=True,
-        easy_drag=True,
+        easy_drag=False,
         on_top=True,
         js_api=Api(),
         background_color="#F0F5F9",

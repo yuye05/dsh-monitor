@@ -316,4 +316,37 @@
   // A2: 定时自动刷新（每 10 分钟；fetch_official 单实例锁已在 app.py 端保证不重入）
   const AUTO_REFRESH_MS = 10 * 60 * 1000;
   setInterval(refresh, AUTO_REFRESH_MS);
+
+  // ---------- 收起成顶部窄条（roll-up）----------
+  // 点浮窗外部 → window.blur → 收起成顶部窄条；悬停/点击窄条 → mouseenter → 展开。状态机 + 防抖。
+  let _rolledUp = false;   // 当前是否处于收起态
+  let _hasFocus = false;   // 首次聚焦门控：避免启动时未聚焦就误收起
+  let _blurLock = 0;       // 时间锁：展开后 400ms 内忽略 blur，防止 resize 引起误收起/振荡
+
+  function setRollUp(collapsed) {
+    if (collapsed === _rolledUp) return;
+    _rolledUp = collapsed;
+    document.body.classList.toggle("collapsed", collapsed);
+    if (window.pywebview && window.pywebview.api && window.pywebview.api.set_rolled_up) {
+      window.pywebview.api.set_rolled_up(collapsed);
+    }
+  }
+
+  window.addEventListener("focus", () => {
+    _hasFocus = true;
+  });
+
+  window.addEventListener("blur", () => {
+    if (!_hasFocus || _rolledUp) return;   // 从未聚焦，或已收起：不处理
+    if (Date.now() < _blurLock) return;    // 刚刚展开，防抖
+    setRollUp(true);
+  });
+
+  // 收起后悬停/点击窄条触发展开（resize 后指针再次进入窗口即 mouseenter）
+  $("app").addEventListener("mouseenter", () => {
+    if (_rolledUp) {
+      _blurLock = Date.now() + 400;
+      setRollUp(false);
+    }
+  });
 })();

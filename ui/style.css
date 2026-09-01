@@ -72,8 +72,12 @@ html, body {
 .app { padding: 14px; display: flex; flex-direction: column; gap: 12px; }
 
 /* ---------- 标题栏（拖拽区保持 app.py 的 DRAG_REGION_DIRECT_TARGET_ONLY 逻辑不变） ---------- */
-.app-header { display: flex; align-items: center; justify-content: space-between; }
+.app-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+/* 拖拽区：品牌 + 顶部空白（flex:1 把按钮推到右侧，中间空白即拖拽区）。按钮在兄弟 .header-actions，不在此拖拽区内 */
+.drag-zone { display: flex; align-items: center; flex: 1 1 auto; min-width: 0; }
 .brand { display: flex; align-items: center; gap: 9px; flex: 0 1 auto; min-width: 0; }
+/* 收起窄条上的"悬停展开"提示，仅收起态可见 */
+.rollup-hint { display: none; margin-left: auto; flex: 0 0 auto; font-size: 12px; color: var(--muted); padding-right: 2px; }
 .logo {
   width: 26px; height: 26px; border-radius: 8px;
   background: linear-gradient(135deg, var(--amber), #ff7a3d);
@@ -240,3 +244,25 @@ html, body {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; }
 }
+
+/* ---------- 收起成顶部窄条（roll-up）：body.collapsed 由 app.js 在点外部时挂上 ----------
+   设计：只留 logo + 标题 + ▾ 提示的一根简洁窄条，隐藏所有按钮（整条悬停即展开，按钮无意义），
+   纯色背景避免径向渐变被裁剪成的"切片感"。 */
+body.collapsed {
+  overflow: hidden;
+  background: var(--card);   /* 纯色，去掉径向渐变切片感 */
+}
+body.collapsed .app {
+  padding: 0 14px;
+  justify-content: center;
+  gap: 0;
+  min-height: 100vh;   /* 视口高 = 窗口高，用 vh 让 justify-content:center 真正垂直居中 */
+}
+body.collapsed .app > *:not(.app-header) { display: none; }
+body.collapsed .app-header { width: 100%; }
+/* 收起时隐藏按钮、居中品牌 */
+body.collapsed .header-actions { display: none; }
+body.collapsed .brand { flex: 1 1 auto; justify-content: center; gap: 7px; }
+body.collapsed .brand .logo { width: 20px; height: 20px; font-size: 11px; }
+body.collapsed .brand-title { font-size: 12px; letter-spacing: 0.03em; }
+body.collapsed .rollup-hint { display: inline; }
