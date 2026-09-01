@@ -6,6 +6,8 @@
 
 ### Added
 
+- **窗口拖拽优化**：拖拽区改为 `.drag-zone`（品牌 + 顶部空白），`DRAG_REGION_DIRECT_TARGET_ONLY=False` + `easy_drag=False`——点顶部任意空白/标题即可拖动，按钮在兄弟节点不再被拖拽劫持
+- **点击外部自动收起（roll-up）**：点浮窗之外（`window.blur`）→ 窗口收成顶部一根 40px 居中窄条（纯色背景、隐藏按钮，仅 logo + 标题 + ▾）；悬停或点击窄条 → 一键展开
 - **智谱 GLM-5.3-Flash 支持**：新增 `fetch_glm.js` 抓智谱官网 `open.bigmodel.cn/finance-center/finance/overview`，显示 GLM 余额 + 本月消费（GLM 卡片下方独立橙色条）
 - **三模型卡片**：V4 Pro / V4 Flash Vision / GLM-5.3-Flash 并列（V4 Pro 走官网 per-model，V4 Flash Vision 走官网 + 本地命中率，GLM 走本地 jsonl）
 - GLM 费用折算：智谱中国区固定价（输入 0.8 / 输出 2.8 / 缓存 0.23 元，无峰谷）
