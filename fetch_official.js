@@ -12,6 +12,7 @@
  */
 const { chromium } = require('@playwright/test');
 const path = require('path');
+const { extractModels } = require('./lib/parse_official.js');
 
 const PROFILE = path.join(__dirname, '.edge-profile');
 const URL = 'https://platform.deepseek.com/usage';
@@ -84,26 +85,9 @@ const LOGIN_WAIT_MS = 5 * 60 * 1000;
     const rangeM = text.match(/近\s*\d+\s*天|今天/);
 
     // 从模型视图解析 per-model Tokens/请求数
-    // 注意：vision 模型名包含 "deepseek-v4-flash" 子串，必须先匹配 vision，否则 flash 会误命中 vision 段
-    function extractModels(t) {
-      const out = {};
-      for (const [name, key, label] of [
-        ['deepseek-v4-flash-vision-exp', 'flash-vision', 'V4 Flash Vision'],
-        ['deepseek-v4-pro', 'pro', 'V4 Pro'],
-      ]) {
-        const idx = t.indexOf(name);
-        if (idx < 0) continue;
-        const sec = t.slice(idx, idx + 300);
-        const rM = sec.match(/API\s*请求次数\s*([\d,]+)/);
-        const oM = sec.match(/Tokens\s*([\d,]+)/);
-        out[key] = {
-          label,
-          tokens: oM ? parseInt(oM[1].replace(/,/g, '')) : null,
-          requests: rM ? parseInt(rM[1].replace(/,/g, '')) : null,
-        };
-      }
-      return out;
-    }
+    // 通用遍历（lib/parse_official.js）：不写死模型名 —— 2026-09-10 官方把
+    // deepseek-v4-flash-vision-exp 改名为 deepseek-flash，写死会导致静默丢数据。
+    const OFFICIAL_MODELS = ['deepseek-flash', 'deepseek-v4-pro'];
 
     console.log(JSON.stringify({
       ok: true,
@@ -113,7 +97,7 @@ const LOGIN_WAIT_MS = 5 * 60 * 1000;
       today_cost: costM ? clean(costM[1]) : null,
       total_tokens: tokM ? clean(tokM[1]) : null,
       requests: reqM ? clean(reqM[1]) : null,
-      models: extractModels(model_text || text),
+      models: extractModels(model_text || text, OFFICIAL_MODELS),
     }, null, 2));
     await ctx.close();
   } catch (e) {

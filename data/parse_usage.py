@@ -8,7 +8,7 @@ DeepSeek Monitor — 用量聚合脚本
 {
   "generated_at": iso,
   "models": {
-    "deepseek-v4-flash-vision-exp": {label, input_tokens, cache_read_tokens, cache_creation_tokens,
+    "deepseek-flash": {label, input_tokens, cache_read_tokens, cache_creation_tokens,
                           output_tokens, total_tokens, cache_hit_rate, cost_cny,
                           efficiency_mtok_per_yuan},
     "deepseek-v4-pro": {...},
@@ -25,9 +25,9 @@ import os
 from datetime import datetime, timedelta, timezone
 
 try:
-    from data.prices import price_for      # 包式导入（Pylance 可解析）
+    from data.prices import price_for, normalize_model      # 包式导入（Pylance 可解析）
 except ImportError:
-    from prices import price_for           # 独立运行脚本时的回退
+    from prices import price_for, normalize_model           # 独立运行脚本时的回退
 
 try:
     from data.config import CONFIG as _C
@@ -38,11 +38,13 @@ except ImportError:
 CLAUDE_PROJECTS = _C["claude_projects"]
 BEIJING_TZ = timezone(timedelta(hours=8))
 
-# 主展示的三模型（vision/pro/glm；v4-flash 非视觉版已弃用）
-PRIMARY_MODELS = ["deepseek-v4-flash-vision-exp", "deepseek-v4-pro", "glm-5.3-flash"]
+# 主展示的三模型（v4-flash 非视觉版已弃用）。
+# 注意：2026-09-10 官方把 API 模型 ID 由 deepseek-v4-flash-vision-exp 改为
+# deepseek-flash，旧名下的历史用量由 normalize_model() 折叠到新名，不丢数据。
+PRIMARY_MODELS = ["deepseek-flash", "deepseek-v4-pro", "glm-5.3-flash"]
 LABELS = {
-    "deepseek-v4-flash-vision-exp": "V4 Flash Vision",
-    "deepseek-v4-pro": "V4 Pro",
+    "deepseek-flash": "v4.1-flash",
+    "deepseek-v4-pro": "v4-pro",
     "glm-5.3-flash": "GLM-5.3 Flash",
 }
 
@@ -109,6 +111,9 @@ def aggregate():
                     continue
 
                 total_msgs += 1
+                # 归一化模型名：2026-09-10 官方改名（deepseek-v4-flash-vision-exp
+                # / deepseek-v4-flash → deepseek-flash），旧名用量折叠到规范名
+                model = normalize_model(model)
                 i_tok = int(usage.get("input_tokens") or 0)
                 cr_tok = int(usage.get("cache_read_input_tokens") or 0)
                 cc_tok = int(usage.get("cache_creation_input_tokens") or 0)

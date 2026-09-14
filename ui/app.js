@@ -51,11 +51,19 @@
     }
   }
 
+  // ---------- 模型名映射（单一来源）----------
+  // 2026-09-10 官方把 API 模型 ID 由 deepseek-v4-flash-vision-exp 改为 deepseek-flash，
+  // 本地聚合与官网解析统一用新名；旧名由 data/prices.py:normalize_model() 折叠。
+  const CARD_MODELS = ["deepseek-flash", "deepseek-v4-pro", "glm-5.3-flash"];
+  const MODEL_CLS = { "deepseek-flash": "flash", "glm-5.3-flash": "glm" }; // 其余按 pro 处理
+  const MODEL_ICON = { "deepseek-flash": "\u{1F441}\u{FE0F}", "glm-5.3-flash": "\u{1F525}" }; // 👁️ / 🔥
+  // 官网 per-model 的键 == 官方模型名；GLM 无官网明细，不映射
+  const OFF_KEY = { "deepseek-flash": "deepseek-flash", "deepseek-v4-pro": "deepseek-v4-pro" };
+
   // ---------- 渲染 ----------
   function renderModel(m, model, offModel) {
-    const isFlash = model === "deepseek-v4-flash-vision-exp";
-    const cls = isFlash ? "flash" : model === "glm-5.3-flash" ? "glm" : "pro";
-    const icon = model === "deepseek-v4-flash-vision-exp" ? "👁️" : model === "glm-5.3-flash" ? "🔥" : "\u{1F9E0}"; // 👁️ / 🔥 / 🧠
+    const cls = MODEL_CLS[model] || "pro";
+    const icon = MODEL_ICON[model] || "\u{1F9E0}"; // 🧠
     const hasOff = !!(offModel && (offModel.tokens != null || offModel.requests != null));
     if (!m) return "";
     // 主数字：DeepSeek 走官网 per-model 优先；GLM 无官网数据走本地
@@ -242,18 +250,12 @@
       offOk && off.total_tokens != null ? fmtCn(Number(off.total_tokens)) : "--";
     // 模型卡片：官方 per-model Tokens 为主，命中率来自本地
     const offModels = (off && off.models) || {};
-    const models = Object.keys(data.models || {}).filter(
-      (m) => m === "deepseek-v4-flash-vision-exp" || m === "deepseek-v4-pro" || m === "glm-5.3-flash"
-    );
+    const models = Object.keys(data.models || {}).filter((m) => CARD_MODELS.indexOf(m) >= 0);
     // 官方 per-model 只在 DeepSeek 官网有，GLM 无官网数据 → 不映射（renderModel 会按 hasOff 显示"本地"）
-    const offKeyMap = {
-      "deepseek-v4-flash-vision-exp": "flash-vision",
-      "deepseek-v4-pro": "pro",
-    };
     $("model-cards").innerHTML = models
       .map((m) => {
-        // offKeyMap[m] 存在才取官网数据，否则传 null（避免 fallback 到 "pro" 错配）
-        const key = offKeyMap[m];
+        // OFF_KEY[m] 存在才取官网数据，否则传 null（避免 fallback 到别的模型错配）
+        const key = OFF_KEY[m];
         return renderModel(data.models[m], m, key ? offModels[key] : null);
       })
       .join("") + renderGlmBalance(data);

@@ -26,7 +26,7 @@ DeepSeek V4 系列在 **2026-08-17 起大幅涨价**并改为峰谷定价——�
 - 📁 **点击外部自动收起**：点浮窗之外 → 收成顶部一根 **40px 居中窄条**（纯色背景、隐藏按钮，仅 logo + 标题 + ▾）；**点击窄条** → 一键展开回完整界面（不悬停自动展开）
 - 💰 官方余额 / 当日消耗 / 今日 Tokens（DeepSeek）
 - 🔥 **智谱 GLM 余额** + 本月消费（GLM 卡片下方独立条）
-- ⚡ **三模型卡片**：V4 Pro / V4 Flash Vision / GLM-5.3 Flash（DeepSeek 走官网，GLM 走本地 jsonl）
+- ⚡ **三模型卡片**：V4.1 Flash / V4 Pro / GLM-5.3 Flash（DeepSeek 走官网，GLM 走本地 jsonl）
 - 📊 最近 7 天缓存命中明细柱状图
 - 🔄 手动刷新（每次约 8s，headless Edge 抓官网）
 - 🎨 **深色「能源仪表舱」主题**（可切浅色）：深墨底 + 暖金弧环余额表 + 冷青缓存命中 + 等宽数字；标题栏主题按钮深浅切换并记忆（localStorage）
@@ -100,10 +100,16 @@ python app.py         # 直接启动（debug 用）
 
 ## 数据说明
 
-- **DeepSeek 官方为准**：余额 / 今日消费 / Tokens / 请求数 / per-model 来自 `platform.deepseek.com/usage`（抓"今天"+"模型"视图）。官网 API 只有 `/user/balance`，没有用量端点，必须爬网页。
+- **DeepSeek 官方为准**：余额 / 今日消费 / Tokens / 请求数 / per-model 来自 `platform.deepseek.com/usage`（抓"今天"+"模型"视图）。官网 API 只有 `/user/balance`，没有用量端点，必须爬网页。per-model 解析走 `lib/parse_official.js` 的**通用遍历**（按页面结构切段），不写死模型名。
+- **模型改名（2026-09-10）**：DeepSeek 把 V4.1 Flash 的 API 模型 ID 由 `deepseek-v4-flash-vision-exp` 改为 `deepseek-flash`，旧名 `deepseek-v4-flash` / `deepseek-v4-flash-vision-exp` 已下线，请求由 V4.1 Flash 提供服务并按 **Flash 价**计费。`data/prices.py:normalize_model()` 会把旧名折叠到规范名，**历史用量不丢**（lifetime 累计连续）。
 - **智谱 GLM**：官网 `open.bigmodel.cn/finance-center/finance/overview` 只能抓 **余额 + 本月总消费**（智谱财务页无 per-model token 明细，费用明细页"暂无数据"）。GLM 的 token 用量仍走本地 jsonl。
 - **本地分解**：`data/parse_usage.py` 聚合 Claude Code 会话 jsonl，提供模型卡片的缓存命中率与 7 天图表。**不**再把缓存命中重读混进"用量"（缓存复用 98% 会把数字撑爆）。
-- **费用折算**：`data/prices.py` 按消息时间戳分段计价。DeepSeek V4 2026-08-17 起改**峰谷定价**（高峰=北京 9-12、14-18 点），`prices.py` 已内置新旧两套价目并自动分段；GLM-5.3-Flash 为**智谱中国区固定价**（输入 0.8 / 输出 2.8 / 缓存 0.23 元，无峰谷）。
+- **费用折算**：`data/prices.py` 按消息时间戳分段计价，**闪电系三段价目**均已内置：
+  - 2026-08-17 起峰谷定价（flash 空闲 0.05 / 1.5 / 4.5 元每百万 token）
+  - **2026-09-10 12:00 起 flash 系列降价**（空闲 0.02 / 1 / 4，高峰为其 2 倍）
+  - 高峰时段 = 北京时间**周一至周五** 9-12、14-18 点（周末全天空闲）
+
+  GLM-5.3-Flash 为**智谱中国区固定价**（输入 0.8 / 输出 2.8 / 缓存 0.23 元，无峰谷）。
 - 若官网抓不到（未登录/超时），余额回退 DeepSeek API（智谱无公开 API 则显示 "--"），其余字段如实显示 "--"，不编造。
 
 ## 目录结构
@@ -114,13 +120,27 @@ python app.py         # 直接启动（debug 用）
 ├── fetch_official.js    # DeepSeek 官网用量抓取器（Playwright + Edge profile）
 ├── fetch_glm.js         # 智谱 GLM 财务抓取器（余额 + 月消费，.glm-profile）
 ├── config.example.json  # 配置模板（复制为 config.json 后填写）
+├── lib/
+│   └── parse_official.js # 官网用量文本解析（通用遍历，不写死模型名）
+├── tests/
+│   └── parse_official.test.js  # 上述解析器的回归测试（node 直接跑）
 ├── data/
 │   ├── config.py        # 读取 config.json / 默认值
-│   ├── prices.py        # DeepSeek 峰谷价目 + GLM 固定价 + 分段计价
+│   ├── prices.py        # DeepSeek 分段价目 + 模型名归一化 + GLM 固定价
 │   ├── fetch_balance.py # DeepSeek /user/balance（API key 只读不落盘）
 │   └── parse_usage.py   # jsonl 聚合 → 模型卡片 + 7 天图表
 └── ui/                  # HTML/CSS/JS（深色能源仪表舱，可切浅色）
 ```
+
+## 回归测试
+
+解析器最容易在"官网改版/改模型名"时静默失灵，因此内置了带真实页面文本 fixture 的测试：
+
+```bash
+node tests/parse_official.test.js
+```
+
+它用 2026-09-11 从官网模型视图抓下的 `body.innerText` 原文做输入，断言能解析出各模型用量，并**交叉校验 per-model 之和 == 页头官方总量**。
 
 ## 安全
 

@@ -2,8 +2,8 @@
   "generated_at": "2026-08-17T13:34:45.832285+00:00",
   "total_messages": 13927,
   "models": {
-    "deepseek-v4-flash-vision-exp": {
-      "label": "V4 Flash Vision",
+    "deepseek-flash": {
+      "label": "v4.1-flash",
       "input_tokens": 7104990,
       "cache_read_tokens": 538766848,
       "cache_creation_tokens": 0,
@@ -13,7 +13,7 @@
       "cost_cny": 50.99,
       "efficiency_mtok_per_yuan": 10.75,
       "lifetime": {
-        "label": "V4 Flash Vision",
+        "label": "v4.1-flash",
         "input_tokens": 32493719,
         "cache_read_tokens": 2757146880,
         "cache_creation_tokens": 0,
@@ -25,7 +25,7 @@
       }
     },
     "deepseek-v4-pro": {
-      "label": "V4 Pro",
+      "label": "v4-pro",
       "input_tokens": 0,
       "cache_read_tokens": 0,
       "cache_creation_tokens": 0,
@@ -35,7 +35,7 @@
       "cost_cny": 0.0,
       "efficiency_mtok_per_yuan": 0.0,
       "lifetime": {
-        "label": "V4 Pro",
+        "label": "v4-pro",
         "input_tokens": 8637866,
         "cache_read_tokens": 368107776,
         "cache_creation_tokens": 0,
@@ -123,11 +123,23 @@
   "official": {
     "ok": true,
     "logged_in": true,
-    "time_range": "浠婂ぉ",
+    "time_range": "今天",
     "balance": "54.32",
     "today_cost": "22.48",
     "total_tokens": "220381646",
-    "requests": "1108"
+    "requests": "1108",
+    "models": {
+      "deepseek-flash": {
+        "label": "deepseek-flash",
+        "requests": 1076,
+        "tokens": 211884755
+      },
+      "deepseek-v4-pro": {
+        "label": "deepseek-v4-pro",
+        "requests": 32,
+        "tokens": 8496891
+      }
+    }
   },
   "balance": {
     "is_available": true,
